@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %} Workout Templates {% endblock %}
+{% block content %}
+<h1>Workout Routines</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Template Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for template in workout_templates %}
+        <tr>
+            <td>{{ template.name }}</td>
+            <td>
+                <a href="{% url 'home' %}">Edit</a> |
+                <a href="{% url 'home' %}">Delete</a> |
+                <a href="{% url 'routines_detail' template.id %}">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+{% endblock %}

@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+from os import getenv
+
+if getenv('DJANGO_ENV') == None:
+  from dotenv import load_dotenv
+  load_dotenv(dotenv_path='.env.local')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,14 +25,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=cldztbc4jg&xl0!x673!*v2_=p$$eu)=7*f#d0#zs$44xx-h^'
+# ! SECURITY WARNING: keep the secret key used in production secret !
+SECRET_KEY = getenv('DJANGO_SECRET_KEY')
+
+SECRET_KEY_FALLBACKS = [
+    'django-insecure-=cldztbc4jg&xl0!x673!*v2_=p$$eu)=7*f#d0#zs$44xx-h^'
+]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if getenv('DJANGO_ENV') == 'development' or getenv('DJANGO_ENV') == 'dev':
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app', 'lift.winslade.net']
-
 
 # Application definition
 
@@ -37,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'example'
+    'lifttrak'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +88,33 @@ WSGI_APPLICATION = 'api.wsgi.app'
 # Note: Django modules for using databases are not support in serverless
 # environments like Vercel. You can use a database over HTTP, hosted elsewhere.
 
-DATABASES = {}
+if getenv('DJANGO_ENV') == 'development' or getenv('DJANGO_ENV') == 'dev':
+  DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+  }
+else:
+
+    DATABASE_URL = getenv('DATABASE_URL')
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': getenv('PGDATABASE'),
+            'USER': getenv('PGUSER'),
+            'PASSWORD': getenv('PGPASSWORD'),
+            'HOST': getenv('PGHOST'),
+            'PORT': getenv('PGPORT', 5432),
+            'OPTIONS': {
+            'sslmode': 'require',
+            },
+            'DISABLE_SERVER_SIDE_CURSORS': True,
+        }
+    }
+
+print(f'Using database: {DATABASES['default']['ENGINE']}')
 
 
 # Password validation
@@ -96,7 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+# Login redirects
+LOGIN_REDIRECT_URL = "/"  # Redirect users after login
+LOGOUT_REDIRECT_URL = "/login/"  # Redirect users after logout
+LOGIN_URL = "/login/"  # Ensure login is required for authentication
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

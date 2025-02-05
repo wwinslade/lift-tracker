@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Workout Template Detail {% endblock %}
+{% block content %}
+<h1>{{ workout_template.name }}</h1>
+<p>{{ workout_template.description }}</p>
+
+<h2>Exercises</h2>
+<ul>
+    {% for exercise in exercise_templates %}
+        <li>
+            <strong>{{ exercise.name }}</strong>
+            <p>{{ exercise.pinned_notes }}</p>
+            <h4>Sets</h4>
+            <ul>
+                {% for set in exercise.settemplate_set.all %}
+                    <li>
+                        Set {{ set.set_number }}: 
+                        {{ set.reps }} reps at {{ set.weight }} kg
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'routines' %}">Back to Routines</a>
+
+{% endblock %}
