@@ -1,9 +1,24 @@
 {
+  "builds": [
+    {
+      "src": "api/wsgi.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "manage.py",
+      "use": "@vercel/python"
+    }
+  ],
   "buildCommand": "python manage.py migrate && python manage.py collectstatic --noinput",
+
   "routes": [
     {
       "src": "/(.*)",
       "dest": "api/wsgi.py"
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
     }
   ]
 }
