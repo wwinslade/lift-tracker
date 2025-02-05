@@ -36,6 +36,12 @@ def WorkoutTemplateDetailPage(request, template_id):
   
   return render(request, 'workout_template_detail.html', context)
 
+@login_required()
+def CreateWorkoutTemplate(request):
+  context = {}
+
+  return render(request, 'create_workout_template.html', context)
+
 # User management below
 @login_required()
 def registerUserPage(request):

@@ -8,18 +8,27 @@
   </div>
 </div>
 
+<div class="row gy-4">
 {% for template in workout_templates %}
-<div class="card border-light shadow-sm">
-  <div class="card-body">
-    <h3 class="card-title">{{ template.name }}</h3>
-    <p class="card-text">{{ template.description }}</p>
-    <div class="btn-group" role="group">
-      <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">view</a>
-      <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">edit</a>
-      <a href="{% url 'home' %}" class="btn btn-primary bg-danger disabled">delete</a>
+<div class="col-12">
+  <div class="card border-light shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">{{ template.name }}</h3>
+      <p class="card-text">{{ template.description }}</p>
+      <div class="btn-group" role="group">
+        <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">view</a>
+        <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">edit</a>
+        <a href="{% url 'home' %}" class="btn btn-primary bg-danger disabled">delete</a>
+      </div>
     </div>
   </div>
 </div>
 {% endfor %}
+</div>
+<div class="row gy-4">
+  <div class="col">
+    <a href="{% url 'create_routine' %}" class="btn btn-primary bg-primary">Create a new routine</a>
+  </div>
+</div>
 
 {% endblock %}
