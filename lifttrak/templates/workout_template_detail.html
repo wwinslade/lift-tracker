@@ -1,27 +1,53 @@
 {% extends "base.html" %}
 {% block title %} Workout Template Detail {% endblock %}
 {% block content %}
-<h1>{{ workout_template.name }}</h1>
-<p>{{ workout_template.description }}</p>
 
-<h2>Exercises</h2>
-<ul>
-    {% for exercise in exercise_templates %}
-        <li>
-            <strong>{{ exercise.name }}</strong>
-            <p>{{ exercise.pinned_notes }}</p>
-            <h4>Sets</h4>
-            <ul>
-                {% for set in exercise.settemplate_set.all %}
-                    <li>
-                        Set {{ set.set_number }}: 
-                        {{ set.reps }} reps at {{ set.weight }} kg
-                    </li>
-                {% endfor %}
-            </ul>
-        </li>
-    {% endfor %}
-</ul>
+<!-- Page title with workout name and details -->
+<div class="row">
+  <div class="col">
+    <h1 class="text-center">{{ workout_template.name }}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <p class="text-center">{{ workout_template.description }}</p>
+  </div>
+</div>
+
+<!-- Turn each exercise for the routine into a card -->
+<div class="row gy-4">
+  {% for exercise in exercise_templates %}
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ exercise.name }}</h3>
+        <p class="card-text">{{ exercise.pinned_notes }}</p>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Set</th>
+                <th>Weight (lbs)</th>
+                <th>Reps</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for set in exercise.settemplate_set.all %}
+                <tr>
+                  <td>{{ set.set_number }}</td>
+                  <td>{{ set.weight }}</td>
+                  <td>{{ set.reps }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
 
 <a href="{% url 'routines' %}">Back to Routines</a>
 
