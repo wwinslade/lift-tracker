@@ -13,6 +13,9 @@ from .models import WorkoutTemplate, Workout, PredefinedExercise, CustomExercise
 def home(request):
   return render(request, 'home.html')
 
+def guest(request):
+  return render(request, 'guest.html')
+
 @login_required()
 def dashboard(request):
   return render(request, 'dashboard.html')
