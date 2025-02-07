@@ -9,43 +9,58 @@
     <title>{% block title %}Django App{% endblock %}</title>
     <!-- Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+ 
+    <!-- Google Fonts Audiowide -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+
+    <!-- Fine, I'll do it myself -->
+    <style>
+      .audiowide-regular {
+        font-family: "Audiowide", serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-gradient-primary">
-      <a class="navbar-brand" href="#">LiftTrak</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">Home</a>
-          </li>
-          {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'routines' %}">Routines</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Progress</a>
-          </li>
-          {% endif %}
-        </ul>
+      <div class="container-fluid">
+        <a class="navbar-brand audiowide-regular" href="{% url 'home' %}">LiftTrak</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'routines' %}">Routines</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Progress</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        {% if request.user.is_authenticated %}
+          <span>Hello, {{ request.user }} </span>
+          <span><a href="{% url 'logout' %}">Logout</a></span>
+        {% else %}
+          <span><a href="{% url 'login' %}">Login</a></span>
+        {% endif %}
       </div>
-      {% if request.user.is_authenticated %}
-        <span>Hello, {{ request.user }} </span>
-        <span><a href="{% url 'logout' %}">Logout</a></span>
-      {% else %}
-        <span><a href="{% url 'login' %}">Login</a></span>
-      {% endif %}
-
     </nav>
 
 
