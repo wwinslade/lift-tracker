@@ -15,12 +15,12 @@ def home(request):
   return render(request, 'home.html')
 
 def guest(request):
-  return render(request, 'guest.html')
+  return render(request, 'guest/guest.html')
 
 def guest_display_wills_routines(request):
   user = get_object_or_404(User, username='wwinslade')
   workout_templates = WorkoutTemplate.objects.filter(user=user)
-  return render(request, 'guest_display_wills_routines.html', {'workout_templates': workout_templates})
+  return render(request, 'guest/wills_routines.html', {'workout_templates': workout_templates})
 
 def guest_display_wills_routines_detail(request, template_id):
   user = get_object_or_404(User, username='wwinslade')
@@ -32,17 +32,17 @@ def guest_display_wills_routines_detail(request, template_id):
     'exercise_templates': exercise_templates,
   }
   
-  return render(request, 'guest_display_wills_routines_detail.html', context)
+  return render(request, 'guest/wills_routines_detail.html', context)
 
 @login_required()
 def dashboard(request):
-  return render(request, 'dashboard.html')
+  return render(request, 'user/dashboard.html')
 
 # Shows the user their defines workout templates
 @login_required()
 def WorkoutTemplatePage(request):
   workout_templates = WorkoutTemplate.objects.filter(user=request.user)
-  return render(request, 'workout_templates.html', {'workout_templates': workout_templates})
+  return render(request, 'user/workout_templates.html', {'workout_templates': workout_templates})
 
 # Shows the user detail on one of their specific workout templates
 @login_required()
@@ -55,13 +55,13 @@ def WorkoutTemplateDetailPage(request, template_id):
     'exercise_templates': exercise_templates,
   }
   
-  return render(request, 'workout_template_detail.html', context)
+  return render(request, 'user/workout_template_detail.html', context)
 
 @login_required()
 def CreateWorkoutTemplate(request):
   context = {}
 
-  return render(request, 'create_workout_template.html', context)
+  return render(request, 'user/create_workout_template.html', context)
 
 # User management below
 @login_required()
