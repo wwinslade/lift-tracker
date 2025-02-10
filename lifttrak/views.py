@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreateUserForm
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
@@ -15,6 +16,23 @@ def home(request):
 
 def guest(request):
   return render(request, 'guest.html')
+
+def guest_display_wills_routines(request):
+  user = get_object_or_404(User, username='wwinslade')
+  workout_templates = WorkoutTemplate.objects.filter(user=user)
+  return render(request, 'guest_display_wills_routines.html', {'workout_templates': workout_templates})
+
+def guest_display_wills_routines_detail(request, template_id):
+  user = get_object_or_404(User, username='wwinslade')
+  workout_template = get_object_or_404(WorkoutTemplate, id=template_id, user=user)
+  exercise_templates = workout_template.exercisetemplate_set.all()
+
+  context = {
+    'workout_template': workout_template,
+    'exercise_templates': exercise_templates,
+  }
+  
+  return render(request, 'guest_display_wills_routines_detail.html', context)
 
 @login_required()
 def dashboard(request):
