@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import CreateUserForm
+from .forms import CreateUserForm, WorkoutTemplateForm
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -59,9 +59,43 @@ def WorkoutTemplateDetailPage(request, template_id):
 
 @login_required()
 def CreateWorkoutTemplate(request):
-  context = {}
+  form = WorkoutTemplateForm()
+  
+  if request.method == 'POST':
+    form = WorkoutTemplateForm(request.POST)
+    if form.is_valid():
+      workout_template = form.save(commit=False)
+      workout_template.user = request.user
+      workout_template.save()
+      return redirect('routines')
 
+  context = {'form': form}
   return render(request, 'user/create_workout_template.html', context)
+
+@login_required()
+def UpdateWorkoutTemplate(request, template_id):
+  workout_template = get_object_or_404(WorkoutTemplate, id=template_id, user=request.user)
+  form = WorkoutTemplateForm(instance=workout_template)
+
+  if request.method == 'POST':
+    form = WorkoutTemplateForm(request.POST, instance=workout_template)
+    if form.is_valid():
+      form.save()
+      return redirect('routines')
+
+  context = {'form': form, 'template_name': workout_template.name}
+  return render(request, 'user/update_workout_template.html', context)
+
+@login_required()
+def DeleteWorkoutTemplate(request, template_id):
+  workout_template = get_object_or_404(WorkoutTemplate, id=template_id, user=request.user)
+  context = {'template_name': workout_template.name, 'template_id': template_id}
+
+  if request.method == 'POST':
+    workout_template.delete()
+    return redirect('routines')
+
+  return render(request, 'user/delete_workout_routine.html', context)
 
 # User management below
 @login_required()

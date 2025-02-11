@@ -17,8 +17,8 @@
       <p class="card-text">{{ template.description }}</p>
       <div class="btn-group" role="group">
         <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">view</a>
-        <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">edit</a>
-        <a href="{% url 'home' %}" class="btn btn-primary bg-danger disabled">delete</a>
+        <a href="{% url 'update_routine' template.id %}" class="btn btn-primary bg-primary">edit</a>
+        <a href="{% url 'delete_routine' template.id %}" class="btn btn-primary bg-danger">delete</a>
       </div>
     </div>
   </div>

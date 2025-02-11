@@ -1,0 +1,12 @@
+{% extends "user/base.html" %}
+{% block title %} Confirm Delete {% endblock %}
+{% block content %}
+
+<p>Are you sure you want to delete "{{ template_name }}"?</p>
+
+<form method="POST" action="{% url 'delete_routine' template_id %}">
+  {% csrf_token %}
+  <a href="{% url 'routines' %}" class="btn btn-secondary">Cancel</button>
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{% endblock %}
