@@ -9,6 +9,7 @@ class WorkoutTemplate(models.Model):
   name = models.CharField(max_length=100)
   description = models.TextField(null=True, blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self):
     return f"{self.user.username}.{self.name}"
@@ -16,6 +17,7 @@ class WorkoutTemplate(models.Model):
 # For actual workouts based on templates
 class Workout(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
+  name = models.CharField(max_length=100, default="My Workout")
   template = models.ForeignKey(WorkoutTemplate, on_delete=models.CASCADE)
   notes = models.TextField(null=True, blank=True)
   date = models.DateTimeField(auto_now_add=True)
