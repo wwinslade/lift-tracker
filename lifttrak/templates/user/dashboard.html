@@ -7,12 +7,11 @@
     <div class="card border-light shadow-sm">
       <div class="card-body">
         <h3 class="card-title">Recent Lifts</h3>
-        
-           
+        <!-- Loop through last 5 workouts, display -->
         {% for workout in last_5_workouts %}
         <div class="row my-2">
           <div class="col col-md-4">
-            <p class="card-text">{{ workout.name }}</p>
+            <h5 class="card-text">{{ workout.name }}</h5>
           </div>
             <div class="col col-lg-4 d-none d-lg-block">
             <p class="card-text">{{ workout.notes }}</p>
@@ -22,7 +21,6 @@
           </div>
         </div>
         {% endfor %}
-
       </div>
     </div>
   </div>
@@ -30,10 +28,11 @@
     <div class="card border-light shadow-sm">
       <div class="card-body">
         <h3 class="card-title">Your Recent Routines</h3>
+        <!-- Loop through recent workout templates (in terms of recently updated) -->
         {% for template in recent_workout_templates %}
         <div class="row my-2">
           <div class="col-6">
-            <h5 class="card-title">{{ template.name }}</h5>
+            <h5 class="card-text">{{ template.name }}</h5>
           </div>
           <div class="col-6">
             <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">View</a>
