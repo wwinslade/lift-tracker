@@ -1,5 +1,52 @@
 {% extends "user/base.html" %}
 {% block title %} Dashboard {% endblock %}
 {% block content %}
-<h1>Dashboard</h1>
+
+<div class="row">
+  <div class="col">
+    <div class="card border-light shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title">Recent Lifts</h3>
+        
+           
+        {% for workout in last_5_workouts %}
+        <div class="row my-2">
+          <div class="col col-md-4">
+            <p class="card-text">{{ workout.name }}</p>
+          </div>
+            <div class="col col-lg-4 d-none d-lg-block">
+            <p class="card-text">{{ workout.notes }}</p>
+            </div>
+          <div class="col col-lg-2 col-md-4">
+            <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">View</a>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card border-light shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title">Your Recent Routines</h3>
+        {% for template in recent_workout_templates %}
+        <div class="row my-2">
+          <div class="col-6">
+            <h5 class="card-title">{{ template.name }}</h5>
+          </div>
+          <div class="col-6">
+            <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">View</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+
+</div>
+
 {% endblock %}

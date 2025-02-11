@@ -38,7 +38,7 @@
           {% if request.user.is_authenticated %}
           <div class="col-12 d-flex flex-column align-items-center mt-3">
             <h2 class="text-center">Welcome back, {{request.user}}</h2>
-            <a class="btn btn-primary bg-primary" href="{% url 'routines' %}">Dashboard</a>
+            <a class="btn btn-primary bg-primary" href="{% url 'dashboard' %}">Dashboard</a>
           </div>
           {% else %}
             <div class="col-12 d-flex justify-content-center mt-3">

@@ -36,12 +36,17 @@ def guest_display_wills_routines_detail(request, template_id):
 
 @login_required()
 def dashboard(request):
-  return render(request, 'user/dashboard.html')
+  last_5_workouts = Workout.objects.filter(user=request.user).order_by('date')[:5]
+  recent_workout_templates = WorkoutTemplate.objects.filter(user=request.user).order_by('-updated_at')[:3]
+  
+  context = {'last_5_workouts': last_5_workouts, 'recent_workout_templates': recent_workout_templates}
+
+  return render(request, 'user/dashboard.html', context)
 
 # Shows the user their defines workout templates
 @login_required()
 def WorkoutTemplatePage(request):
-  workout_templates = WorkoutTemplate.objects.filter(user=request.user)
+  workout_templates = WorkoutTemplate.objects.filter(user=request.user).order_by('-updated_at')
   return render(request, 'user/workout_templates.html', {'workout_templates': workout_templates})
 
 # Shows the user detail on one of their specific workout templates
