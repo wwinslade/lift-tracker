@@ -56,9 +56,9 @@
         </div>
         {% if request.user.is_authenticated %}
           <span>Hello, {{ request.user }} </span>
-          <span><a href="{% url 'logout' %}">Logout</a></span>
+          <span><a href="{% url 'logout' %}" class="btn btn-primary bg-primary mx-2">Logout</a></span>
         {% else %}
-          <span><a href="{% url 'login' %}">Login</a></span>
+          <span><a href="{% url 'login' %}" class="btn btn-primary bg-primary">Login</a></span>
         {% endif %}
       </div>
     </nav>
