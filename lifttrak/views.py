@@ -10,19 +10,22 @@ from django.contrib.auth.decorators import login_required
 
 from .models import WorkoutTemplate, Workout, PredefinedExercise, CustomExercise, Exercise, ExerciseTemplate, Set, SetTemplate
 
+from django.http import JsonResponse
+
+
 # Home, also the default page
-def home(request):
+def HomePage(request):
   return render(request, 'home.html')
 
-def guest(request):
+def GuestHomePage(request):
   return render(request, 'guest/guest.html')
 
-def guest_display_wills_routines(request):
+def GuestDisplayWillsRoutines(request):
   user = get_object_or_404(User, username='wwinslade')
   workout_templates = WorkoutTemplate.objects.filter(user=user)
   return render(request, 'guest/wills_routines.html', {'workout_templates': workout_templates})
 
-def guest_display_wills_routines_detail(request, template_id):
+def GuestDisplayWillsRoutinesDetail(request, template_id):
   user = get_object_or_404(User, username='wwinslade')
   workout_template = get_object_or_404(WorkoutTemplate, id=template_id, user=user)
   exercise_templates = workout_template.exercisetemplate_set.all()
@@ -35,7 +38,7 @@ def guest_display_wills_routines_detail(request, template_id):
   return render(request, 'guest/wills_routines_detail.html', context)
 
 @login_required()
-def dashboard(request):
+def DashboardPage(request):
   last_5_workouts = Workout.objects.filter(user=request.user).order_by('date')[:5]
   recent_workout_templates = WorkoutTemplate.objects.filter(user=request.user).order_by('-updated_at')[:3]
   
@@ -135,3 +138,7 @@ def loginUserPage(request):
 def logoutUser(request):
   logout(request)
   return redirect('home')
+
+@login_required()
+def LiveWorkoutPage(request):
+  return render(request, 'user/workout_ui.html')
