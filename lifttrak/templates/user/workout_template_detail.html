@@ -1,22 +1,22 @@
 {% extends "user/base.html" %}
-{% block title %} Workout Template Detail {% endblock %}
+{% block title %} Routine Detail {% endblock %}
 {% block content %}
 
 <!-- Page title with workout name and details -->
 <div class="row">
   <div class="col">
-    <h1 class="text-center">{{ workout_template.name }}</h1>
+    <h1 class="text-center">{{ routine.name }}</h1>
   </div>
 </div>
 <div class="row">
   <div class="col">
-    <p class="text-center">{{ workout_template.description }}</p>
+    <p class="text-center">{{ routine.description }}</p>
   </div>
 </div>
 
 <!-- Turn each exercise for the routine into a card -->
 <div class="row gy-4">
-  {% for exercise in exercise_templates %}
+  {% for exercise in routine_exercises %}
   <div class="col-12">
     <div class="card">
       <div class="card-body">
@@ -32,12 +32,14 @@
               </tr>
             </thead>
             <tbody>
-              {% for set in exercise.settemplate_set.all %}
+              {% for routine_exercise in exercise.routineexercise_set.all %}
+              {% for set in exercise.routine_exercise.sets.all %}
                 <tr>
-                  <td>{{ set.set_number }}</td>
+                  <td>{{ set.order }}</td>
                   <td>{{ set.weight }}</td>
                   <td>{{ set.reps }}</td>
                 </tr>
+              {% endfor %}
               {% endfor %}
             </tbody>
           </table>

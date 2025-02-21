@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import WorkoutTemplate, Workout, PredefinedExercise, CustomExercise, Exercise, ExerciseTemplate, Set, SetTemplate
+from .models import *
 
 # Register your models here.
-admin.site.register(WorkoutTemplate)
-admin.site.register(Workout)
-admin.site.register(PredefinedExercise)
-admin.site.register(CustomExercise)
+admin.site.register(Routine)
 admin.site.register(Exercise)
-admin.site.register(ExerciseTemplate)
-admin.site.register(Set)
-admin.site.register(SetTemplate)
+admin.site.register(RoutineExercise)
+admin.site.register(RoutineSet)
+admin.site.register(Workout)
+admin.site.register(WorkoutExercise)
+admin.site.register(WorkoutSet)

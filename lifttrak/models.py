@@ -1,124 +1,79 @@
-from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+from django.db import models
 
-# Templates for workouts
-class WorkoutTemplate(models.Model):
+class Routine(models.Model):
+  """A pre-planned routine that users can reuse to start a workout."""
   user = models.ForeignKey(User, on_delete=models.CASCADE)
-  name = models.CharField(max_length=100)
-  description = models.TextField(null=True, blank=True)
+  name = models.CharField(max_length=255, null=True, blank=True, default='My New Routine')
+  description = models.TextField(blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self):
     return f"{self.user.username}.{self.name}"
 
-# For actual workouts based on templates
-class Workout(models.Model):
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  name = models.CharField(max_length=100, default="My Workout")
-  template = models.ForeignKey(WorkoutTemplate, on_delete=models.CASCADE)
-  notes = models.TextField(null=True, blank=True)
-  date = models.DateTimeField(auto_now_add=True)
-
-  def __str__(self):
-    return f"{self.user.username}.{self.template.name}.{self.date}"
-
-# For predefined exercises that are globally available
-class PredefinedExercise(models.Model):
-  muscles_targeted_choices = [
-    ('chest', 'Chest'),
-    ('traps', 'Traps'),
-    ('rhomboids', 'Rhomboids'),
-    ('lats', 'Lats'),
-    ('lower_back', 'Lower Back'),
-    ('quadriceps', 'Quadriceps'),
-    ('hamstrings', 'Hamstrings'),
-    ('calves', 'Calves'),
-    ('glutes', 'Glutes'),
-    ('biceps', 'Biceps'),
-    ('triceps', 'Triceps'),
-    ('front_deltoid', 'Front Deltoid'),
-    ('side_deltoid', 'Side Deltoid'),
-    ('rear_deltoid', 'Rear Deltoid'),
-    ('core', 'Core'),
-    ('forearms', 'Forearms'),
-  ]
-  
-  name = models.CharField(max_length=255)
-  description = models.TextField(null=True, blank=True)
-  muscles_targeted = models.CharField(max_length=255, null=True, blank=True, choices=muscles_targeted_choices)
-
-  def __str__(self):
-    return f"exercise.predefined.{self.name}"
-
-# For custom exercises that users can create
-class CustomExercise(models.Model):
-  muscles_targeted_choices = [
-    ('chest', 'Chest'),
-    ('traps', 'Traps'),
-    ('rhomboids', 'Rhomboids'),
-    ('lats', 'Lats'),
-    ('lower_back', 'Lower Back'),
-    ('quadriceps', 'Quadriceps'),
-    ('hamstrings', 'Hamstrings'),
-    ('calves', 'Calves'),
-    ('glutes', 'Glutes'),
-    ('biceps', 'Biceps'),
-    ('triceps', 'Triceps'),
-    ('front_deltoid', 'Front Deltoid'),
-    ('side_deltoid', 'Side Deltoid'),
-    ('rear_deltoid', 'Rear Deltoid'),
-    ('core', 'Core'),
-    ('forearms', 'Forearms'),
-  ]
-  
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  name = models.CharField(max_length=255)
-  description = models.TextField(null=True, blank=True)
-  muscles_targeted = models.CharField(max_length=255, null=True, blank=True, choices=muscles_targeted_choices)
-
-  def __str__(self):
-    return f"exercise.custom.{self.user.username}.{self.name}"
-
-# For exercises in workouts, either from predefined global or custom
 class Exercise(models.Model):
-  workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="exercises")
+  MUSCLE_GROUP_CHOICES = [
+    ('Chest', 'Chest'),
+    ('Back', 'Back'),
+    ('Legs', 'Legs'),
+    ('Shoulders', 'Shoulders'),
+    ('Arms', 'Arms'),
+    ('Core', 'Core'),
+  ]
 
-  content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-  object_id = models.PositiveIntegerField()
-  content_object = GenericForeignKey('content_type', 'object_id')
+  """An exercise within a routine or a workout."""
+  name = models.CharField(max_length=255, default='New Exercise')
+  description = models.TextField(blank=True, null=True)
+  muscle_group = models.CharField(max_length=255, blank=True, null=True, choices=MUSCLE_GROUP_CHOICES)
+  
+  def __str__(self):
+    return self.name
 
-# For templates of exercises
-class ExerciseTemplate(models.Model):
-  template = models.ForeignKey(WorkoutTemplate, on_delete=models.CASCADE)
-  predefined_exercise = models.ForeignKey(PredefinedExercise, on_delete=models.CASCADE, null=True, blank=True)
-  custom_exercise = models.ForeignKey(CustomExercise, on_delete=models.CASCADE, null=True, blank=True)
-  name = models.CharField(max_length=255)
-  pinned_notes = models.TextField(null=True, blank=True)
+class RoutineExercise(models.Model):
+  """An exercise that is part of a routine template."""
+  routine = models.ForeignKey(Routine, on_delete=models.CASCADE, related_name="routine_exercises")
+  exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+  order = models.PositiveIntegerField(default=0)  # Order of exercises in the routine
+  
+  def __str__(self):
+    return f"{self.exercise.name} in {self.routine.name}"
+
+class RoutineSet(models.Model):
+  """A set template for an exercise within a routine."""
+  routine_exercise = models.ForeignKey(RoutineExercise, on_delete=models.CASCADE, related_name="sets")
+  reps = models.PositiveIntegerField(default=8)
+  weight = models.FloatField(default=0.0)  # Can be bodyweight (0)
+  order = models.PositiveIntegerField(default=0)  # Order of sets in the exercise
 
   def __str__(self):
-    return f"{self.template.user.username}{self.template.name}.{self.name}"
+    return f"{self.reps} reps at {self.weight}lbs in {self.routine_exercise.exercise.name}"
 
-class SetTemplate(models.Model):
-  exercise_template = models.ForeignKey(ExerciseTemplate, on_delete=models.CASCADE)
-  set_number = models.IntegerField(null=True, blank=True)
-  reps = models.IntegerField(null=True, blank=True)
-  weight = models.FloatField(default=0.0, null=True, blank=True)
-  rir = models.IntegerField(null=True, blank=True)
-
-  def __str__(self):
-    return f"{self.exercise_template.name}.{self.set_number}.w{self.weight}.r{self.reps}"
-
-# For individual set tracking
-class Set(models.Model):
-  exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="sets")
-  set_number = models.IntegerField(null=True, blank=True)
-  reps = models.IntegerField(null=True, blank=True)
-  weight = models.FloatField(default=0.0, null=True, blank=True)
-  rir = models.IntegerField(null=True, blank=True)
-  completed_at = models.DateTimeField()
+class Workout(models.Model):
+  """A live workout session tracked by a user."""
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  routine = models.ForeignKey(Routine, on_delete=models.SET_NULL, null=True, blank=True)
+  date = models.DateField(auto_now_add=True, null=True, blank=True)
 
   def __str__(self):
-    return f"{self.set_number}.{self.weight}.r{self.reps}"
+      return f"Workout by {self.user.username} on {self.started_at}"
+
+class WorkoutExercise(models.Model):
+  """An exercise performed during a live workout session."""
+  workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="workout_exercises")
+  exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
+  order = models.PositiveIntegerField(default=0)
+
+  def __str__(self):
+      return f"{self.exercise.name} in workout {self.workout.id}"
+
+class WorkoutSet(models.Model):
+  """A set tracked within a live workout session."""
+  workout_exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE, related_name="sets")
+  reps = models.PositiveIntegerField(default=8)
+  weight = models.FloatField(default=0.0)  # 0 = bodyweight
+  completed = models.BooleanField(default=False)  # Mark if the set was completed
+  order = models.PositiveIntegerField(default=0)
+
+  def __str__(self):
+      return f"{self.reps} reps at {self.weight}lbs in {self.workout_exercise.exercise.name}"
