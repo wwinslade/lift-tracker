@@ -16,12 +16,14 @@
 
 <!-- Turn each exercise for the routine into a card -->
 <div class="row gy-4">
-  {% for exercise in routine_exercises %}
+  {% for re in routine_exercises %}
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title">{{ exercise.name }}</h3>
-        <p class="card-text">{{ exercise.pinned_notes }}</p>
+        <h3 class="card-title">{{ re.exercise.name }}</h3>
+        {% if re.description %}
+          <p class="card-text">{{ re.description }}</p>
+        {% endif %}
         <div class="table-responsive">
           <table class="table table-sm table-striped">
             <thead>
@@ -32,14 +34,16 @@
               </tr>
             </thead>
             <tbody>
-              {% for routine_exercise in exercise.routineexercise_set.all %}
-              {% for set in exercise.routine_exercise.sets.all %}
+              {% for rs in re.sets.all %}
                 <tr>
-                  <td>{{ set.order }}</td>
-                  <td>{{ set.weight }}</td>
-                  <td>{{ set.reps }}</td>
+                  <td>{{ rs.order }}</td>
+                  <td>{{ rs.weight }}</td>
+                  <td>{{ rs.reps }}</td>
                 </tr>
-              {% endfor %}
+              {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center">No sets recorded for this exercise.</td>
+                </tr>
               {% endfor %}
             </tbody>
           </table>
@@ -51,6 +55,6 @@
 </div>
 
 
-<a href="{% url 'routines' %}" class="btn btn-primary bg-primary">Back to Routines</a>
+<a href="javascript:history.back()" class="btn btn-primary bg-primary">Back</a>
 
 {% endblock %}

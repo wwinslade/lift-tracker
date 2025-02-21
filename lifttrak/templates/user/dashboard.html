@@ -14,7 +14,7 @@
             <h5 class="card-text">{{ workout.name }}</h5>
           </div>
             <div class="col col-lg-4 d-none d-lg-block">
-            <p class="card-text">{{ workout.notes }}</p>
+            <p class="card-text">{{ workout.description }}</p>
             </div>
           <div class="col col-lg-2 col-md-4">
             <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">View</a>
@@ -29,13 +29,13 @@
       <div class="card-body">
         <h3 class="card-title">Your Recent Routines</h3>
         <!-- Loop through recent workout templates (in terms of recently updated) -->
-        {% for template in recent_workout_templates %}
+        {% for routine in recent_routines %}
         <div class="row my-2">
           <div class="col-6">
-            <h5 class="card-text">{{ template.name }}</h5>
+            <h5 class="card-text">{{ routine.name }}</h5>
           </div>
           <div class="col-6">
-            <a href="{% url 'routines_detail' template.id %}" class="btn btn-primary bg-primary">View</a>
+            <a href="{% url 'routines_detail' routine.id %}" class="btn btn-primary bg-primary">View</a>
           </div>
         </div>
         {% endfor %}

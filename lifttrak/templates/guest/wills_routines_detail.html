@@ -1,27 +1,29 @@
 {% extends "guest/base.html" %}
-{% block title %} Workout Template Detail {% endblock %}
+{% block title %}{{ routine.name }} Detail {% endblock %}
 {% block content %}
 
 <!-- Page title with workout name and details -->
 <div class="row">
   <div class="col">
-    <h1 class="text-center">{{ workout_template.name }}</h1>
+    <h1 class="text-center">{{ routine.name }}</h1>
   </div>
 </div>
 <div class="row">
   <div class="col">
-    <p class="text-center">{{ workout_template.description }}</p>
+    <p class="text-center">{{ routine.description }}</p>
   </div>
 </div>
 
 <!-- Turn each exercise for the routine into a card -->
 <div class="row gy-4">
-  {% for exercise in exercise_templates %}
+  {% for re in routine_exercises %}
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title">{{ exercise.name }}</h3>
-        <p class="card-text">{{ exercise.pinned_notes }}</p>
+        <h3 class="card-title">{{ re.exercise.name }}</h3>
+        {% if re.description %}
+          <p class="card-text">{{ re.description }}</p>
+        {% endif %}
         <div class="table-responsive">
           <table class="table table-sm table-striped">
             <thead>
@@ -32,11 +34,15 @@
               </tr>
             </thead>
             <tbody>
-              {% for set in exercise.settemplate_set.all %}
+              {% for rs in re.sets.all %}
                 <tr>
-                  <td>{{ set.set_number }}</td>
-                  <td>{{ set.weight }}</td>
-                  <td>{{ set.reps }}</td>
+                  <td>{{ rs.order }}</td>
+                  <td>{{ rs.weight }}</td>
+                  <td>{{ rs.reps }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center">No sets recorded for this exercise.</td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -49,6 +55,6 @@
 </div>
 
 
-<a href="{% url 'guest_routines' %}" class="btn btn-primary bg-primary my-3">Back to Routines</a>
+<a href="javascript:history.back()" class="btn btn-primary bg-primary">Back</a>
 
 {% endblock %}
