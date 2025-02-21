@@ -9,12 +9,12 @@
 </div>
 
 <div class="row gy-4">
-{% for template in workout_templates %}
+{% for routine in routines %}
 <div class="col-12">
   <div class="card border-light shadow-sm">
     <div class="card-body">
-      <h3 class="card-title">{{ template.name }}</h3>
-      <p class="card-text">{{ template.description }}</p>
+      <h3 class="card-title">{{ routine.name }}</h3>
+      <p class="card-text">{{ routine.description }}</p>
       <div class="btn-group" role="group">
         <a href="{% url 'guest_routines_detail' routine.id %}" class="btn btn-primary bg-primary">view</a>
         <a href="{% url 'home' %}" class="btn btn-primary bg-primary disabled">edit</a>

@@ -23,7 +23,7 @@ def GuestHomePage(request):
 def GuestDisplayWillsRoutines(request):
   user = get_object_or_404(User, username='wwinslade')
   routines = Routine.objects.filter(user=user)
-  return render(request, 'guest/wills_routines.html', {'workout_templates': routines})
+  return render(request, 'guest/wills_routines.html', {'routines': routines})
 
 def GuestDisplayWillsRoutinesDetail(request, routine_id):
   user = get_object_or_404(User, username='wwinslade')
