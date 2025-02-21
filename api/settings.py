@@ -28,10 +28,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ! SECURITY WARNING: keep the secret key used in production secret !
 SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
-SECRET_KEY_FALLBACKS = [
-    'django-insecure-=cldztbc4jg&xl0!x673!*v2_=p$$eu)=7*f#d0#zs$44xx-h^'
-]
-
 # SECURITY WARNING: don't run with debug turned on in production!
 if getenv('DJANGO_ENV') == 'development' or getenv('DJANGO_ENV') == 'dev':
     DEBUG = True
