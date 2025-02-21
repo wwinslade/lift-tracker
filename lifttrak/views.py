@@ -25,14 +25,13 @@ def GuestDisplayWillsRoutines(request):
   routines = Routine.objects.filter(user=user)
   return render(request, 'guest/wills_routines.html', {'workout_templates': routines})
 
-def GuestDisplayWillsRoutinesDetail(request, template_id):
+def GuestDisplayWillsRoutinesDetail(request, routine_id):
   user = get_object_or_404(User, username='wwinslade')
-  routine = get_object_or_404(Routine, id=template_id, user=user)
-  routine_exercises = routine.exercisetemplate_set.all()
-
+  routine = get_object_or_404(Routine, id=routine_id, user=user)
+  routine_exercises = RoutineExercise.objects.filter(routine=routine).prefetch_related('sets').order_by('order')
   context = {
-    'workout_template': routine,
-    'exercise_templates': routine_exercises,
+    'routine': routine,
+    'routine_exercises': routine_exercises,
   }
   
   return render(request, 'guest/wills_routines_detail.html', context)
@@ -42,7 +41,7 @@ def DashboardPage(request):
   last_5_workouts = Workout.objects.filter(user=request.user).order_by('date')[:5]
   recent_routines = Routine.objects.filter(user=request.user).order_by('-updated_at')[:3]
   
-  context = {'last_5_workouts': last_5_workouts, 'recent_workout_templates': recent_routines}
+  context = {'last_5_workouts': last_5_workouts, 'recent_routines': recent_routines}
 
   return render(request, 'user/dashboard.html', context)
 
@@ -54,9 +53,9 @@ def WorkoutTemplatePage(request):
 
 # Shows the user detail on one of their specific workout templates
 @login_required()
-def WorkoutTemplateDetailPage(request, template_id):
-  routine = get_object_or_404(Routine, id=template_id, user=request.user)
-  routine_exercises = Exercise.objects.filter(routineexercise__routine=routine).order_by('routineexercise__order')
+def RoutineDetailPage(request, routine_id):
+  routine = get_object_or_404(Routine, id=routine_id, user=request.user)
+  routine_exercises = RoutineExercise.objects.filter(routine=routine).prefetch_related('sets').order_by('order')
   context = {
     'routine': routine,
     'routine_exercises': routine_exercises,
