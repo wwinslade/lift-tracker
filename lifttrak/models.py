@@ -35,6 +35,7 @@ class RoutineExercise(models.Model):
   routine = models.ForeignKey(Routine, on_delete=models.CASCADE, related_name="routine_exercises")
   exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
   order = models.PositiveIntegerField(default=0)  # Order of exercises in the routine
+  description = models.TextField(blank=True, null=True)  # Notes for the exercise
   
   def __str__(self):
     return f"{self.exercise.name} in {self.routine.name}"
@@ -53,6 +54,8 @@ class Workout(models.Model):
   """A live workout session tracked by a user."""
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   routine = models.ForeignKey(Routine, on_delete=models.SET_NULL, null=True, blank=True)
+  name = models.CharField(max_length=255, null=True, blank=True, default='My Workout')
+  description = models.TextField(blank=True, null=True)
   date = models.DateField(auto_now_add=True, null=True, blank=True)
 
   def __str__(self):
