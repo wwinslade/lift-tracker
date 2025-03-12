@@ -49,7 +49,7 @@ def DashboardPage(request):
 @login_required()
 def RoutinesPage(request):
   routines = Routine.objects.filter(user=request.user).order_by('-updated_at')
-  return render(request, 'user/workout_templates.html', {'routines': routines})
+  return render(request, 'user/routines_list.html', {'routines': routines})
 
 # Shows the user detail on one of their specific workout templates
 @login_required()

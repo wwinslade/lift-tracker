@@ -1,0 +1,32 @@
+{% extends "user/base.html" %}
+{% block title %} {{request.user}}'s Routines {% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col">
+   <h1 class="text-center">{{request.user}}'s Routines</h1>
+  </div>
+</div>
+
+<div class="row gy-4">
+{% for routine in routines %}
+<div class="col-12">
+  <div class="card border-light shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">{{ routine.name }}</h3>
+      <p class="card-text">{{ routine.description }}</p>
+      <a href="{% url 'routines_detail' routine.id %}" class="btn btn-primary bg-primary">View</a>
+      <a href="{% url 'update_routine' routine.id %}" class="btn btn-primary bg-primary">Edit</a>
+      <a href="{% url 'delete_routine' routine.id %}" class="btn btn-danger bg-danger">Delete</a>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+<div class="row gy-4">
+  <div class="col justify-content-center d-flex">
+    <a href="{% url 'create_routine' %}" class="btn btn-primary bg-primary mt-3">Create a new routine</a>
+  </div>
+</div>
+
+{% endblock %}
