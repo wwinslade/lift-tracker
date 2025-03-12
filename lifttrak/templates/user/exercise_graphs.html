@@ -1,0 +1,72 @@
+{% extends "user/base.html" %}
+{% block title %}Exercise Graph{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <select id="exerciseDropdown" onchange="updateGraphs()">
+      {% for ex in exercise %}
+      <option value="{{ ex }}">{{ ex }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <canvas id="exercise-volume"></canvas>
+  </div>
+  <div class="col-md-6">
+    <canvas id="exercise-1rm"></canvas>
+  </div>
+</div>
+
+<script>
+  let vol_chart;
+  let onerm_chart;
+
+  async function updateGraphs() {
+    const exercise = document.getElementById('exerciseDropdown').value;
+    const response = await fetch(`/info/${exercise}`);
+    const data = await response.json();
+
+    const labels = data.dates;
+    const volume_values = data.volumes;
+    const onerm_values = data.onerm_values;
+
+    const volume_ctx = document.getElementById('exercise-volume').getContext('2d');
+    const onerm_ctx = document.getElementById('exercise-1rm').getContext('2d');
+    
+    if (vol_chart) {
+      vol_chart.destroy();
+    }
+
+    if (onerm_chart) {
+      onerm_chart.destroy();
+    }
+
+    vol_chart = new Chart(volume_ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Workout Volume',
+          data: volume_values,
+          borderColor: 'blue',
+          fill: false
+        }]
+      }
+    });
+
+    onerm_chart = new Chart(onerm_ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Exercise 1RM',
+          data: onerm_values,
+          borderColor: 'blue',
+          fill: false
+        }]
+      }
+    });
+  }
+</script>
+
+{% endblock %}

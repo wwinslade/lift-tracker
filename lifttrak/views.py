@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Routine, Exercise, RoutineExercise, RoutineSet, Workout, WorkoutExercise, WorkoutSet
 
 from django.http import JsonResponse
+from django.db.models import Sum, F
 
 
 # Home, also the default page
@@ -44,6 +45,20 @@ def DashboardPage(request):
   context = {'last_5_workouts': last_5_workouts, 'recent_routines': recent_routines}
 
   return render(request, 'user/dashboard.html', context)
+
+@login_required()
+def ExerciseInfo(request):
+  labels = []
+  volume_values = []
+  onerm_values = []
+
+  context = {
+    'labels': labels,
+    'volume_values': volume_values,
+    'onerm_values': onerm_values,
+  }
+
+  return JsonResponse(context)
 
 # Shows the user their defines workout templates
 @login_required()
