@@ -47,9 +47,9 @@ def DashboardPage(request):
 
 # Shows the user their defines workout templates
 @login_required()
-def WorkoutTemplatePage(request):
+def RoutinesPage(request):
   routines = Routine.objects.filter(user=request.user).order_by('-updated_at')
-  return render(request, 'user/workout_templates.html', {'workout_templates': routines})
+  return render(request, 'user/workout_templates.html', {'routines': routines})
 
 # Shows the user detail on one of their specific workout templates
 @login_required()
@@ -138,5 +138,22 @@ def logoutUser(request):
   return redirect('home')
 
 @login_required()
-def LiveWorkoutPage(request):
-  return render(request, 'user/workout_ui.html')
+def CreateWorkout(request):
+  workout = Workout.objects.create(user=request.user)
+  exercises = Exercise.objects.all()
+
+  if request.method == 'POST':
+    if 'add_exercise' in request.POST:
+      exercise_id = request.POST.get('exercise_id')
+      exercise = get_object_or_404(Exercise, id=exercise_id)
+      order = request.POST.get('order', 0)  # Default to 0 if not provided
+      description = request.POST.get('description', exercise.description)  # Default to parent exercise if not specified
+      workout_exercise = WorkoutExercise.objects.create(workout=workout, exercise=exercise, order=order, description=description)
+      return redirect('add_sets', workout_id=workout.id)
+
+  context = {
+    'workout': workout,
+    'exercises': exercises,
+  }
+
+  return render(request, 'user/create_workout.html', context)
